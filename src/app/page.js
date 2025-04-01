@@ -55,7 +55,7 @@ export default function DiscountCalculator() {
   return (
     <div className="p-6 max-w-4xl mx-auto mt-10 bg-white rounded-xl shadow-lg border border-gray-100">
       <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
-        📦 Weekly Discount Calculator
+        📦 Monthly Discount Calculator
       </h1>
 
       {/* <input
@@ -89,8 +89,8 @@ export default function DiscountCalculator() {
 
       {/* ✅ NEW SECTION: Total Volume Display */}
       <p className="text-lg font-semibold text-gray-700 mb-6">
-        🧮 Total Weekly Off-take:{" "}
-        <span className="text-blue-600 font-bold">{totalVolume} bags</span>
+        🧮 Total Monthly Off-take:{" "}
+        <span className="text-blue-600 font-bold">{totalVolume * 4} bags</span>
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -112,17 +112,16 @@ export default function DiscountCalculator() {
 
         <div>
           <label className="block text-sm font-medium text-gray-600 mb-1">
-            Display Account %
+            Display Account?
           </label>
-          <input
-            type="number"
-            placeholder="e.g., 1"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+          <select
             value={display}
-            onChange={(e) =>
-              setDisplay(parseFloat(e.target.value) || 0)
-            }
-          />
+            onChange={(e) => setDisplay(e.target.value === "1" ? 1 : 0)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+          >
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
         </div>
       </div>
 
@@ -143,7 +142,9 @@ export default function DiscountCalculator() {
               <td className="px-4 py-3">{volumeDiscount}</td>
               <td className="px-4 py-3">{usanceBonus}</td> */}
               {/* <td className="px-4 py-3">{display}</td> */}
-              <td className="px-4 py-3 font-semibold text-green-600">{totalDiscount}</td>
+              <td className="px-4 py-3 font-semibold text-green-600">
+                {totalDiscount}
+              </td>
             </tr>
           </tbody>
         </table>
