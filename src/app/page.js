@@ -17,7 +17,7 @@ const discountRules = {
     { min: 0, max: 0, discount: 4 },
     { min: 1, max: 7, discount: 2 },
     { min: 8, max: 15, discount: 0 },
-    { min: 16, max: 1000, discount: 0 },
+    // { min: 16, max: 1000, discount: 0 },
   ],
 };
 
@@ -48,7 +48,8 @@ export default function DiscountCalculator() {
   const [display, setDisplay] = useState(1);
 
   const totalVolume = quantities.reduce((a, b) => a + b, 0);
-  const volumeDiscount = calculateDiscount(totalVolume, "volume");
+  const totalVlumeMonthly = totalVolume * 4;
+  const volumeDiscount = calculateDiscount(totalVlumeMonthly, "volume");
   const usanceBonus = calculateDiscount(usance, "usance");
   const totalDiscount = baseDiscount + volumeDiscount + usanceBonus + display;
 
@@ -89,6 +90,10 @@ export default function DiscountCalculator() {
 
       {/* ✅ NEW SECTION: Total Volume Display */}
       <p className="text-lg font-semibold text-gray-700 mb-6">
+        🧮 Total Weekly Off-take:{" "}
+        <span className="text-blue-600 font-bold">{totalVolume} bags</span>
+      </p>
+      <p className="text-lg font-semibold text-gray-700 mb-6">
         🧮 Total Monthly Off-take:{" "}
         <span className="text-blue-600 font-bold">{totalVolume * 4} bags</span>
       </p>
@@ -106,7 +111,7 @@ export default function DiscountCalculator() {
             <option value="0">0 Days</option>
             <option value="5">1-7 Days</option>
             <option value="10">8-15 Days</option>
-            <option value="20">16+ Days</option>
+            {/* <option value="20">16+ Days</option> */}
           </select>
         </div>
 
