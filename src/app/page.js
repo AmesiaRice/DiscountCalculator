@@ -20,7 +20,8 @@ const discountRules = {
     { min: 15.01, max: 20, discount: 2 },
     { min: 20.01, max: 30, discount: 2.5 },
     { min: 30.01, max: 50, discount: 3 },
-    { min: 50.01, max: 1000, discount: 4 },
+    { min: 50.01, max: 200, discount: 4 },
+    { min: 200.01, max: 1000, discount: 6 },
   ],
   usance: [
     { min: 0, max: 0, discount: 4 },
