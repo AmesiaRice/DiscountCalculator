@@ -1,7 +1,16 @@
 "use client";
 import React, { useState } from "react";
 
-const baseDiscount = 16;
+const baseDiscount = 0;
+
+// Dealer Price List (Box)
+2520
+2160
+2016
+1740
+1500
+2640
+2280
 
 const discountRules = {
   volume: [
@@ -17,9 +26,18 @@ const discountRules = {
     { min: 0, max: 0, discount: 4 },
     { min: 1, max: 7, discount: 2 },
     { min: 8, max: 15, discount: 0 },
-    // { min: 16, max: 1000, discount: 0 },
   ],
 };
+
+const products = [
+  { name: "Saifco Excel (4x5kg)", dealerPrice: 2520 },
+  { name: "Saifco Excel (20x1kg)", dealerPrice: 2640 },
+  { name: "Saifco Wattan Se (4x5kg)",  dealerPrice: 2160 },
+  { name: "Saifco Wattan Se (20x1kg)",  dealerPrice: 2280 },
+  { name: "Saifco Super (4x5kg)",  dealerPrice: 2016 },
+  { name: "Saifco Gold (4x5kg)",  dealerPrice: 1740 },
+  { name: "Saifco Amber (4x5kg)",  dealerPrice: 1500 },
+];
 
 const calculateDiscount = (value, type) => {
   const ruleSet = discountRules[type];
@@ -31,98 +49,98 @@ const calculateDiscount = (value, type) => {
   return 0;
 };
 
-const products = [
-  "Saifco Excel (4x5kg)",
-  "Saifco Excel (20x1kg)",
-  "Saifco Wattan BE (4x5kg)",
-  "Saifco Wattan BE (20x1kg)",
-  "Saifco Super (4x5kg)",
-  "Saifco Gold (4x5kg)",
-  "Saifco Amber (4x5kg)",
-];
-
-export default function DiscountCalculator() {
-  const [dealerName, setDealerName] = useState("");
+export default function PriceTable() {
   const [quantities, setQuantities] = useState(Array(products.length).fill(0));
-  const [usance, setUsance] = useState(0);
-  const [display, setDisplay] = useState(1);
+  const [usance, setUsance] = useState("0");
+  const [display, setDisplay] = useState("1");
 
-  const totalVolume = quantities.reduce((a, b) => a + b, 0);
-  const totalVlumeMonthly = totalVolume * 4;
-  const volumeDiscount = calculateDiscount(totalVlumeMonthly, "volume");
-  const usanceBonus = calculateDiscount(usance, "usance");
-  const totalDiscount = baseDiscount + volumeDiscount + usanceBonus + display;
+  const handleQtyChange = (index, value) => {
+    const newQuantities = [...quantities];
+    newQuantities[index] = parseFloat(value) || 0;
+    setQuantities(newQuantities);
+  };
+
+
+
+  const totalWeekly = quantities.reduce((sum, q) => sum + q, 0);
+  const totalMonthly = totalWeekly * 4;
+
+  const volumeDiscount = calculateDiscount(totalMonthly, "volume");
+  const usanceBonus = calculateDiscount(parseInt(usance), "usance");
+  const displayBonus = parseInt(display);
+
+  const totalDiscount = baseDiscount + volumeDiscount + usanceBonus + displayBonus;
+
+  const finalDiscountedPrice = (dealerPrice) => {
+    const discountAmount = (dealerPrice * totalDiscount) / 100;
+    return (dealerPrice - discountAmount).toFixed(2);
+  };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto mt-10 bg-white rounded-xl shadow-lg border border-gray-100">
-      <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
-        📦 Monthly Discount Calculator
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto mt-10 bg-white rounded-xl shadow-lg border border-gray-200 overflow-x-auto">
+      <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">
+        📦 Product Price Discount Table
       </h1>
 
-      {/* <input
-        type="text"
-        placeholder="Enter Dealer Name (e.g., Saifco Traders)"
-        className="mb-6 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
-        value={dealerName}
-        onChange={(e) => setDealerName(e.target.value)}
-      /> */}
+      <table className="min-w-full text-sm border border-gray-300">
+        <thead className="bg-blue-50 text-xs text-gray-600 uppercase">
+          <tr>
+            <th className="px-3 py-2 text-left">Product</th>
+            <th className="px-3 py-2 text-left">Qty</th>
+            <th className="px-3 py-2 text-left">Dealer Price</th>
+            <th className="px-3 py-2 text-left">Final MRP</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map((p, i) => (
+            <tr key={i} className="border-t border-gray-200">
+              <td className="px-3 py-2">{p.name}</td>
+              <td className="px-3 py-2">
+                <input
+                  type="number"
+                  value={quantities[i]}
+                  onChange={(e) => handleQtyChange(i, e.target.value)}
+                  className="w-16 px-2 py-1 border border-gray-300 rounded-md text-center"
+                />
+              </td>
+              <td className="px-3 py-2">{p.dealerPrice}</td>
+              <td className="px-3 py-2 font-semibold text-green-600">
+                ₹{finalDiscountedPrice(p.dealerPrice)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        {products.map((product, index) => (
-          <div key={index}>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
-              {product}
-            </label>
-            <input
-              type="number"
-              placeholder="Enter quantity (bags)"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
-              value={quantities[index]}
-              onChange={(e) => {
-                const newQuantities = [...quantities];
-                newQuantities[index] = parseFloat(e.target.value) || 0;
-                setQuantities(newQuantities);
-              }}
-            />
-          </div>
-        ))}
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 text-sm text-gray-700">
+        <p>
+          🧮 <strong>Total Weekly Take:</strong>{" "}
+          <span className="text-blue-600 font-semibold">{totalWeekly}</span> bags
+        </p>
+        <p>
+          🗓️ <strong>Total Monthly Take:</strong>{" "}
+          <span className="text-blue-600 font-semibold">{totalMonthly}</span> bags
+        </p>
 
-      {/* ✅ NEW SECTION: Total Volume Display */}
-      <p className="text-lg font-semibold text-gray-700 mb-6">
-        🧮 Total Weekly Off-take:{" "}
-        <span className="text-blue-600 font-bold">{totalVolume} bags</span>
-      </p>
-      <p className="text-lg font-semibold text-gray-700 mb-6">
-        🧮 Total Monthly Off-take:{" "}
-        <span className="text-blue-600 font-bold">{totalVolume * 4} bags</span>
-      </p>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">
-            Payment Usance (Days)
-          </label>
+          <label className="block mb-1 font-medium">Payment Usance (Days)</label>
           <select
             value={usance}
-            onChange={(e) => setUsance(parseInt(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+            onChange={(e) => setUsance(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
           >
             <option value="0">0 Days</option>
-            <option value="5">1-7 Days</option>
-            <option value="10">8-15 Days</option>
-            {/* <option value="20">16+ Days</option> */}
+            <option value="5">1–7 Days</option>
+            <option value="10">8–15 Days</option>
           </select>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">
-            Display Account?
-          </label>
+          <label className="block mb-1 font-medium">Display Account?</label>
           <select
             value={display}
-            onChange={(e) => setDisplay(e.target.value === "1" ? 1 : 0)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+            onChange={(e) => setDisplay(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
           >
             <option value="1">Yes</option>
             <option value="0">No</option>
@@ -130,25 +148,26 @@ export default function DiscountCalculator() {
         </div>
       </div>
 
-      <div className="overflow-x-auto mt-4">
-        <table className="w-full text-sm text-gray-700 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-md">
-          <thead className="bg-blue-50 text-blue-700 text-xs uppercase">
+      {/* ✅ Discount Table Section */}
+      <div className="mt-8">
+        <table className="w-full text-sm text-gray-800 bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+          <thead className="bg-gray-100 text-blue-700 text-xs uppercase">
             <tr>
-              {/* <th className="px-4 py-3 text-left">Base %</th>
+              {/* <th className="px-4 py-3 text-left">Base %</th> */}
               <th className="px-4 py-3 text-left">Volume %</th>
               <th className="px-4 py-3 text-left">Usance %</th>
-              <th className="px-4 py-3 text-left">Display %</th> */}
+              <th className="px-4 py-3 text-left">Display %</th>
               <th className="px-4 py-3 text-left">Total %</th>
             </tr>
           </thead>
           <tbody>
-            <tr className="border-t">
-              {/* <td className="px-4 py-3">{baseDiscount}</td>
+            <tr className="border-t text-center">
+              {/* <td className="px-4 py-3">{baseDiscount}</td> */}
               <td className="px-4 py-3">{volumeDiscount}</td>
-              <td className="px-4 py-3">{usanceBonus}</td> */}
-              {/* <td className="px-4 py-3">{display}</td> */}
+              <td className="px-4 py-3">{usanceBonus}</td>
+              <td className="px-4 py-3">{displayBonus}</td>
               <td className="px-4 py-3 font-semibold text-green-600">
-                {totalDiscount}
+                {totalDiscount.toFixed(2)}
               </td>
             </tr>
           </tbody>
