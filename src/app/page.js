@@ -116,11 +116,11 @@ export default function PriceTable() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 text-sm text-gray-700">
         <p>
           🧮 <strong>Total Weekly Take:</strong>{" "}
-          <span className="text-blue-600 font-semibold">{totalWeekly}</span> bags
+          <span className="text-blue-600 font-semibold">{totalWeekly}</span> box
         </p>
         <p>
           🗓️ <strong>Total Monthly Take:</strong>{" "}
-          <span className="text-blue-600 font-semibold">{totalMonthly}</span> bags
+          <span className="text-blue-600 font-semibold">{totalMonthly}</span> box
         </p>
 
         <div>
